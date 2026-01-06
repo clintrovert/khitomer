@@ -1,0 +1,71 @@
+syntax = "proto3";
+
+package leader;
+
+option go_package = "github.com/clintrovert/khitomer/proto";
+
+// Leader service for managing workflows
+service LeaderService {
+  // Start a workflow manually
+  rpc StartWorkflow(StartWorkflowRequest) returns (StartWorkflowResponse);
+  
+  // Get workflow status
+  rpc GetWorkflowStatus(GetWorkflowStatusRequest) returns (GetWorkflowStatusResponse);
+  
+  // Cancel a workflow
+  rpc CancelWorkflow(CancelWorkflowRequest) returns (CancelWorkflowResponse);
+  
+  // Get list of processed tasks
+  rpc GetProcessedTasks(GetProcessedTasksRequest) returns (GetProcessedTasksResponse);
+}
+
+message StartWorkflowRequest {
+  string jira_ticket_id = 1;
+  string repository_owner = 2;
+  string repository_name = 3;
+  string base_branch = 4;
+}
+
+message StartWorkflowResponse {
+  string workflow_id = 1;
+  string status = 2;
+}
+
+message GetWorkflowStatusRequest {
+  string workflow_id = 1;
+}
+
+message GetWorkflowStatusResponse {
+  string workflow_id = 1;
+  string status = 2;
+  string jira_ticket_id = 3;
+  string pr_url = 4;
+  string error_message = 5;
+}
+
+message CancelWorkflowRequest {
+  string workflow_id = 1;
+}
+
+message CancelWorkflowResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+message GetProcessedTasksRequest {
+  int32 limit = 1;
+  int32 offset = 2;
+}
+
+message ProcessedTask {
+  string jira_ticket_id = 1;
+  string workflow_id = 2;
+  string status = 3;
+  string created_at = 4;
+}
+
+message GetProcessedTasksResponse {
+  repeated ProcessedTask tasks = 1;
+  int32 total = 2;
+}
+

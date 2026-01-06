@@ -1,0 +1,77 @@
+version: '3.8'
+
+services:
+  temporal:
+    image: temporalio/auto-setup:latest
+    ports:
+      - "7233:7233"
+      - "8088:8088"
+    environment:
+      - DB=postgresql
+      - DB_PORT=5432
+      - POSTGRES_USER=temporal
+      - POSTGRES_PWD=temporal
+      - POSTGRES_SEEDS=postgresql
+      - DYNAMIC_CONFIG_FILE_PATH=config/dynamicconfig/development-sql.yaml
+    volumes:
+      - temporal-data:/var/lib/temporal
+
+  postgresql:
+    image: postgres:14
+    environment:
+      POSTGRES_USER: temporal
+      POSTGRES_PASSWORD: temporal
+      POSTGRES_DB: temporal
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+  leader:
+    build:
+      context: .
+      dockerfile: Dockerfile.leader
+    environment:
+      - TEMPORAL_ADDRESS=temporal:7233
+      - TEMPORAL_NAMESPACE=default
+      - TASK_QUEUE=implementation-queue
+      - JIRA_BASE_URL=${JIRA_BASE_URL}
+      - JIRA_USERNAME=${JIRA_USERNAME}
+      - JIRA_TOKEN=${JIRA_TOKEN}
+      - JIRA_PROJECT_KEY=${JIRA_PROJECT_KEY}
+      - JIRA_CUSTOM_FIELD=${JIRA_CUSTOM_FIELD}
+      - JIRA_STATUS_FILTER=${JIRA_STATUS_FILTER}
+      - JIRA_POLL_INTERVAL=${JIRA_POLL_INTERVAL}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - OPENAI_MODEL=${OPENAI_MODEL}
+      - REST_PORT=8080
+      - GRPC_PORT=9090
+    ports:
+      - "8080:8080"
+      - "9090:9090"
+    depends_on:
+      - temporal
+
+  worker:
+    build:
+      context: .
+      dockerfile: Dockerfile.worker
+    environment:
+      - TEMPORAL_ADDRESS=temporal:7233
+      - TEMPORAL_NAMESPACE=default
+      - TASK_QUEUE=implementation-queue
+      - GITHUB_TOKEN=${GITHUB_TOKEN}
+      - WORKSPACE_DIR=/workspace
+      - JIRA_BASE_URL=${JIRA_BASE_URL}
+      - JIRA_USERNAME=${JIRA_USERNAME}
+      - JIRA_TOKEN=${JIRA_TOKEN}
+    volumes:
+      - workspace-data:/workspace
+    depends_on:
+      - temporal
+
+volumes:
+  temporal-data:
+  postgres-data:
+  workspace-data:
+
