@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package workflows;
 
-option go_package = "github.com/clintrovert/khitomer/proto/workflows";
+option go_package = "github.com/clintrovert/khitomer/proto";
 
 // Task metadata from Jira
 message TaskMetadata {

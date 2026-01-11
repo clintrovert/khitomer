@@ -22,7 +22,7 @@ type Server struct {
 func NewServer(temporalClient *temporal.Client, logger *zap.Logger) *Server {
 	return &Server{
 		temporalClient: temporalClient,
-		logger:          logger,
+		logger:         logger,
 	}
 }
 
@@ -34,7 +34,7 @@ func (s *Server) Register(grpcServer *grpc.Server) {
 // StartWorkflow starts a workflow
 func (s *Server) StartWorkflow(ctx context.Context, req *pb.StartWorkflowRequest) (*pb.StartWorkflowResponse, error) {
 	task := &types.Task{
-		JiraTicketID:     req.JiraTicketId,
+		JiraTicketID:    req.JiraTicketId,
 		RepositoryOwner: req.RepositoryOwner,
 		RepositoryName:  req.RepositoryName,
 		BaseBranch:      req.BaseBranch,
@@ -105,4 +105,3 @@ func (s *Server) GetProcessedTasks(ctx context.Context, req *pb.GetProcessedTask
 		Total: 0,
 	}, nil
 }
-

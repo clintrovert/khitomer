@@ -4,7 +4,7 @@
 // 	protoc        v3.21.12
 // source: proto/workflows.proto
 
-package workflows
+package proto
 
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
@@ -1071,7 +1071,7 @@ const file_proto_workflows_proto_rawDesc = "" +
 	"\vattachments\x18\x05 \x03(\tR\vattachments\"F\n" +
 	"\x10JiraUpdateOutput\x12\x18\n" +
 	"\asuccess\x18\x01 \x01(\bR\asuccess\x12\x18\n" +
-	"\amessage\x18\x02 \x01(\tR\amessageB1Z/github.com/clintrovert/khitomer/proto/workflowsb\x06proto3"
+	"\amessage\x18\x02 \x01(\tR\amessageB'Z%github.com/clintrovert/khitomer/protob\x06proto3"
 
 var (
 	file_proto_workflows_proto_rawDescOnce sync.Once
